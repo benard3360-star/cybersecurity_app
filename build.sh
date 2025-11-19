@@ -4,13 +4,17 @@ set -o errexit
 
 echo "Starting build process..."
 
-# Upgrade pip
+# Upgrade pip to latest version
 echo "Upgrading pip..."
-pip install --upgrade pip
+python -m pip install --upgrade pip
 
-# Install dependencies with no cache to avoid issues
+# Install wheel for better package building
+echo "Installing wheel..."
+pip install wheel
+
+# Install dependencies with no cache and force reinstall
 echo "Installing dependencies..."
-pip install --no-cache-dir -r requirements-minimal.txt
+pip install --no-cache-dir --force-reinstall -r requirements-minimal.txt
 
 # Set Django settings module for production
 echo "Setting production environment..."
