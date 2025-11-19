@@ -4,6 +4,7 @@ import joblib
 import os
 import random
 import numpy as np
+import logging
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -22,6 +23,9 @@ from .utils import get_attack_name, detect_attack_type, get_attack_code
 # Define paths
 MODEL_PATH = os.path.join(settings.BASE_DIR, 'cyberattack', 'model_files', 'stacked_top13_model.pkl')
 FEATURE_PATH = os.path.join(settings.BASE_DIR, 'cyberattack', 'model_files', 'top13_features.pkl')
+
+# Initialize logger
+logger = logging.getLogger(__name__)
 
 def generate_benign_traffic():
     """Generate realistic benign network traffic data"""
@@ -500,8 +504,8 @@ def prediction_results(request):
             messages.error(request, 'No prediction data found. Please submit the form again.')
             return redirect('predict_attack')
         
-        # Convert prediction to meaningful label
-        prediction_label = 'BENIGN' if prediction == 0 else 'DDoS'
+        # Convert prediction to meaningful label using proper attack name
+        prediction_label = get_attack_name(prediction)
         
         # Generate insights based on prediction
         insights = get_mitigation_insights(prediction, input_data)
