@@ -12,20 +12,27 @@ ALLOWED_HOSTS = [
 ]
 
 # Database - Use PostgreSQL on Render
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DATABASE_NAME', 'cybersecurity_db'),
-        'USER': os.environ.get('DATABASE_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
-        'HOST': os.environ.get('DATABASE_HOST', 'localhost'),
-        'PORT': os.environ.get('DATABASE_PORT', '5432'),
+if 'DATABASE_URL' in os.environ:
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('DATABASE_NAME', 'cybersecurity_db'),
+            'USER': os.environ.get('DATABASE_USER', 'postgres'),
+            'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
+            'HOST': os.environ.get('DATABASE_HOST', 'localhost'),
+            'PORT': os.environ.get('DATABASE_PORT', '5432'),
+        }
+    }
 
 # Static files
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Security settings for production
 SECURE_SSL_REDIRECT = True

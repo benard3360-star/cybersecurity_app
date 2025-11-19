@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views, admin_views, auth_views, firewall_views
+from . import views, admin_views, auth_views, firewall_views, health_views
 
 urlpatterns = [
     path('', views.predict_attack, name='predict_attack'),
@@ -43,4 +43,7 @@ urlpatterns = [
     
     # Admin emergency unblock
     path('emergency-unblock/', views.admin_unblock, name='admin_unblock'),
+    
+    # Health check for deployment
+    path('health/', health_views.health_check, name='health_check'),
 ]
